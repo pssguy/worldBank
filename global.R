@@ -14,6 +14,9 @@ library(plotly)
 #library(explodingboxplotR)
 library(dplyr) # looks like another package might include plyr so moved to bottom
 
+countries <-read_csv("data/countries.csv")
+print(glimpse(countries))
+
 ##load current list of indicators - reg updated off line
 
 # indicators <- read_csv("data/indicators.csv")

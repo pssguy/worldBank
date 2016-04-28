@@ -39,16 +39,40 @@ wbData <- reactive({
   s = as.integer(input$tableChoice_rows_selected)
   
   id <- searchData()[s,]$indicatorID
-  #   print(input$hthTable_selected) #1 so it is row
-  #   
-  #   s = input$hthTable_selected
-  #print(s)
-  # print(glimpse(info()$tbl))
-  # team <- info()$tbl[s,]$Opponents
+  df <- wb(indicator = id,  POSIXct = TRUE) # with true a data fied is added for jan 1 eg 2014-01-01 and granuality annual
+  
+  print(glimpse(df))
+  print(df$iso2c)
+  print(unique(df$country))
+  
+  write_csv(df,"data/problems.csv")
+  
+  test <- df %>% 
+   select(-iso2c) %>% # appears as this is sometimes not shown
+    left_join(countries) %>% 
+    filter(!is.na(long))
+  
+  print(glimpse(test))
+  
+  info=list(id=id,df=df,test=test)
+  return(info)
+  
 })
 
 # confirms works
 output$rowCheck <- renderText({
   
-  wbData()
+  wbData()$id
+})
+
+output$resultTable <- DT::renderDataTable({
+  
+  req(wbData()$test)
+  print("wbData()$test")
+  print(glimpse(wbData()$test))
+  
+  wbData()$test %>% 
+    select(country,date,value)%>%
+                         DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
+  
 })

@@ -36,11 +36,11 @@ dashboardPage(skin="yellow",
       DT::dataTableOutput("tableChoice")
       ),
       box(width=2,
-          textOutput("rowCheck"))
-      # selectInput("indicator","Enter search term e.g. electricity",choices=indicatorChoice),
-      # actionButton("searchWB","Go"),
-      # textOutput("check")
-      #DT::dataTableOutput("choicesTable")
+          textOutput("rowCheck")),
+      box(
+        DT::dataTableOutput("resultTable")
+      )
+     
     )#,
    # tabItem("info",includeMarkdown("info.md"))
     
