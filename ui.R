@@ -8,7 +8,7 @@ dashboardPage(skin="yellow",
 
     
     sidebarMenu(
-      menuItem("Searchable", tabName = "info"),
+      menuItem("Searchable", tabName = "searchable"),
       menuItem("Info", tabName = "info",icon = icon("info")),
       
       
@@ -27,7 +27,20 @@ dashboardPage(skin="yellow",
   
   dashboardBody(tabItems(
     tabItem(
-      "Searchable"
+      "searchable",
+      box(width=10,collapsible=TRUE,
+      textInput("searchValue", label="Enter Search term e.g. Electricity", value="poverty"),
+
+      actionButton("searchWB","Go"),
+      
+      DT::dataTableOutput("tableChoice")
+      ),
+      box(width=2,
+          textOutput("rowCheck"))
+      # selectInput("indicator","Enter search term e.g. electricity",choices=indicatorChoice),
+      # actionButton("searchWB","Go"),
+      # textOutput("check")
+      #DT::dataTableOutput("choicesTable")
     )#,
    # tabItem("info",includeMarkdown("info.md"))
     
