@@ -41,8 +41,8 @@ wbData <- reactive({
   id <- searchData()[s,]$indicatorID
   df <- wb(indicator = id,  POSIXct = TRUE) # with true a data fied is added for jan 1 eg 2014-01-01 and granuality annual
   
-  print(glimpse(df))
-  print(df$iso2c)
+  # print(glimpse(df))
+  # print(df$iso2c)
   print(unique(df$country))
   
   write_csv(df,"data/problems.csv")
@@ -54,7 +54,9 @@ wbData <- reactive({
   
   print(glimpse(test))
   
-  info=list(id=id,df=df,test=test)
+  latest<- max(test$date)
+  
+  info=list(id=id,df=df,test=test,latest=latest)
   return(info)
   
 })
@@ -75,4 +77,58 @@ output$resultTable <- DT::renderDataTable({
     select(country,date,value)%>%
                          DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
   
+})
+
+output$resultPlot <- renderPlotly({
+  
+  req(wbData()$test)
+  worst <- wbData()$test %>% 
+    filter(date==wbData()$latest) %>% 
+    arrange(value) %>% 
+    select(country,value) %>% 
+    head(10) %>% 
+    select(country) %>% 
+    unlist(use.names = FALSE)
+  
+  wbData()$test %>% 
+    filter(country %in% worst) %>% 
+    arrange(value) %>% # legend then reflects worst currently
+    group_by(country) %>% 
+    plot_ly(x=date,y=value,color=country,mode="markers+lines") %>% 
+    layout(hovermode = "closest",
+           xaxis=list(title=" ")
+          # yaxis=list(title="Percentage"),
+         #  title="Lowest levels of access to electricity (% of population)"
+    )
+  
+})
+
+output$resultMap <- renderLeaflet({
+  
+  req(wbData()$test)
+  
+  mostRecent <- wbData()$test %>% 
+                filter(date==wbData()$latest)
+  
+  countries2 <- sp::merge(maps, 
+                          mostRecent, 
+                          by.x = "iso_a2", 
+                          by.y = "iso2c",                    
+                          sort = FALSE)
+  
+  
+  country_popup <- paste0("<strong>Country: </strong>", 
+                          countries2$country, 
+                          "<br>",
+                          countries2$value)
+  
+  leaflet(data = countries2) %>% #leaflet supports matrices,data.frames and spatial objects from sp package
+    addTiles() %>%
+    addPolygons(fillColor = ~pal(value), 
+                fillOpacity = 0.8, 
+                color = "#BDBDC3", 
+                weight = 1,
+                popup = country_popup
+    ) %>% 
+    mapOptions(zoomToLimits="first")
 })

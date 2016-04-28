@@ -12,10 +12,19 @@ library(DT)
 # library(rcdimple)
 library(plotly)
 #library(explodingboxplotR)
+library(leaflet)
+library(rgdal)
 library(dplyr) # looks like another package might include plyr so moved to bottom
 
 countries <-read_csv("data/countries.csv")
 print(glimpse(countries))
+
+maps <- readOGR(dsn=".",
+                layer = "ne_50m_admin_0_countries", 
+                encoding = "UTF-8",verbose=FALSE)
+
+
+pal <- colorBin(colorRamp(c("#ffffff", "#2166ac"), interpolate="spline"),domain=NULL)
 
 ##load current list of indicators - reg updated off line
 

@@ -37,8 +37,14 @@ dashboardPage(skin="yellow",
       ),
       box(width=2,
           textOutput("rowCheck")),
-      box(
+      box(width=4,
         DT::dataTableOutput("resultTable")
+      ),
+      box(width=8,
+          plotlyOutput("resultPlot")
+      ),
+      box(
+        leafletOutput("resultMap")
       )
      
     )#,
