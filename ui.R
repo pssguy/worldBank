@@ -1,14 +1,26 @@
 
 
-dashboardPage(skin="yellow",
+dashboardPage(skin="yellow", title = "World Bank",
   dashboardHeader(title = "World Bank"),
   
-  dashboardSidebar(title = "World Bank",
+  dashboardSidebar(
     includeCSS("custom.css"),
+   
 
     
     sidebarMenu(
       menuItem("Searchable", tabName = "searchable"),
+      
+      inputPanel(
+       # includeMarkdown("search.md"),
+      textInput("searchValue", 
+                label="Enter a term of interest. The resulting table can be further searched    
+                Click on row of required indicator and after a few seconds a table of all the data,
+                a chart showing up to ten least-developed nations from latest data, and map of countries covered by indicator
+                will appear",
+                placeholder="Enter term e.g. Poverty"),
+      actionButton("searchWB","Go")
+      ),
       menuItem("Info", tabName = "info",icon = icon("info")),
       
       
@@ -28,27 +40,31 @@ dashboardPage(skin="yellow",
   dashboardBody(tabItems(
     tabItem(
       "searchable",
-      box(width=10,collapsible=TRUE,
-      textInput("searchValue", label="Enter Search term e.g. Electricity", value="poverty"),
-
-      actionButton("searchWB","Go"),
+      fluidRow(column(width=12,
+      box(width=12,collapsible=TRUE,solidHeader = TRUE,status = 'success',title="Click Required Indicator for Results  Collapse box for easier viewing of outputs",
+         
       
       DT::dataTableOutput("tableChoice")
-      ),
-      box(width=2,
-          textOutput("rowCheck")),
-      box(width=4,
-        DT::dataTableOutput("resultTable")
-      ),
-      box(width=8,
-          plotlyOutput("resultPlot")
-      ),
-      box(
-        leafletOutput("resultMap")
-      )
+      ))),
      
-    )#,
-   # tabItem("info",includeMarkdown("info.md"))
+     fluidRow(column(width=12,
+                     h2(textOutput("resultTitle"))
+     )),
+      fluidRow(column(width=2,
+      box(width=12,title="All Data",
+        DT::dataTableOutput("resultTable")
+      )),
+      column(width=5,
+      box(width=12,title="Bottom Countries - Add/Remove countries by clicking legend",
+          plotlyOutput("resultPlot")
+      )),
+      column(width=5,
+      box(width=12,title="Map of latest Data Pan/Zoom and click for details",
+        leafletOutput("resultMap")
+      )))
+     
+    ),
+    tabItem("info",includeMarkdown("info.md"))
     
   ))
 )

@@ -17,17 +17,13 @@ df<- wbsearch(pattern = searchValue, fields = c("indicator", "indicatorDesc","in
 })
 
 output$tableChoice <- DT::renderDataTable({
- #  print(searchData()$searchValue)
- # df<- wbsearch(pattern = searchData()$searchValue, fields = c("indicator", "indicatorDesc"),
- #           extra = TRUE) # have not got latest cache
- # 
+ 
  searchData() %>%
-   select(indicatorID,indicator,indicatorDesc) %>% 
+   select(indicatorID,Indicator=indicator,Description=indicatorDesc) %>% 
                          DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,selection='single',options= list(paging = TRUE, searching = TRUE,info=FALSE,
                                                                                                                                            columnDefs = list(list(visible=FALSE, targets=list(1)))))
 })
 
-#options=list(columnDefs = list(list(visible=FALSE, targets=columns2hide)))
 
 ## now get data for selected table
 
@@ -39,13 +35,10 @@ wbData <- reactive({
   s = as.integer(input$tableChoice_rows_selected)
   
   id <- searchData()[s,]$indicatorID
-  df <- wb(indicator = id,  POSIXct = TRUE) # with true a data fied is added for jan 1 eg 2014-01-01 and granuality annual
-  
-  # print(glimpse(df))
-  # print(df$iso2c)
-  print(unique(df$country))
-  
-  write_csv(df,"data/problems.csv")
+  df <- wb(indicator = id,  POSIXct = TRUE) 
+  # print(unique(df$country))
+  # 
+  # write_csv(df,"data/problems.csv")
   
   test <- df %>% 
    select(-iso2c) %>% # appears as this is sometimes not shown
@@ -61,21 +54,21 @@ wbData <- reactive({
   
 })
 
-# confirms works
-output$rowCheck <- renderText({
-  
-  wbData()$id
-})
 
 output$resultTable <- DT::renderDataTable({
-  
+
   req(wbData()$test)
-  print("wbData()$test")
-  print(glimpse(wbData()$test))
   
-  wbData()$test %>% 
+
+  wbData()$test %>%
     select(country,date,value)%>%
                          DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
+
+})
+
+output$resultTitle <- renderText({
+  req(wbData()$test)
+  unique(wbData()$test$indicator)
   
 })
 
@@ -92,13 +85,13 @@ output$resultPlot <- renderPlotly({
   
   wbData()$test %>% 
     filter(country %in% worst) %>% 
-    arrange(value) %>% # legend then reflects worst currently
+    #arrange(value) %>% # legend then reflects worst currently - but then lines go squwiff
+    arrange(date) %>%
     group_by(country) %>% 
     plot_ly(x=date,y=value,color=country,mode="markers+lines") %>% 
     layout(hovermode = "closest",
-           xaxis=list(title=" ")
-          # yaxis=list(title="Percentage"),
-         #  title="Lowest levels of access to electricity (% of population)"
+           xaxis=list(title=" "),
+           yaxis=list(title="Value (see Indicator description for details")
     )
   
 })
@@ -116,9 +109,13 @@ output$resultMap <- renderLeaflet({
                           by.y = "iso2c",                    
                           sort = FALSE)
   
+  countries2$value <- round(countries2$value,1)
+  
   
   country_popup <- paste0("<strong>Country: </strong>", 
                           countries2$country, 
+                          "<br>",
+                          countries2$date,
                           "<br>",
                           countries2$value)
   
