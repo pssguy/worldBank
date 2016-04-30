@@ -20,7 +20,7 @@ output$tableChoice <- DT::renderDataTable({
  
  searchData() %>%
    select(indicatorID,Indicator=indicator,Description=indicatorDesc) %>% 
-                         DT::datatable(class='compact stripe hover row-border order-column',rownames=TRUE,selection='single',options= list(paging = TRUE, searching = TRUE,info=FALSE,
+                         DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,selection='single',options= list(paging = TRUE, searching = TRUE,info=FALSE,
                                                                                                                                            columnDefs = list(list(visible=FALSE, targets=list(1)))))
 })
 
