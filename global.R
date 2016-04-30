@@ -23,8 +23,8 @@ maps <- readOGR(dsn=".",
                 layer = "ne_50m_admin_0_countries", 
                 encoding = "UTF-8",verbose=FALSE)
 
-
-pal <- colorBin(colorRamp(c("#ffffff", "#2166ac"), interpolate="spline"),domain=NULL)
+# problem with legend may be due to putting here
+#pal <- colorBin(colorRamp(c("#ffffff", "#2166ac"), interpolate="spline"),domain=NULL)
 
 ##load current list of indicators - reg updated off line
 

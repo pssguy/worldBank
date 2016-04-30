@@ -120,6 +120,8 @@ output$resultMap <- renderLeaflet({
                           "<br>",
                           countries2$value)
   
+  pal <- colorBin(colorRamp(c("#ffffff", "#2166ac"), interpolate="spline"),domain=countries2$value)
+  
   leaflet(data = countries2) %>% #leaflet supports matrices,data.frames and spatial objects from sp package
     setView(0,0,zoom=1) %>% 
     addTiles() %>%
