@@ -61,6 +61,7 @@ output$resultTable <- DT::renderDataTable({
   
 
   wbData()$test %>%
+    mutate(value=round(value,1)) %>% 
     select(country,date,value)%>%
                          DT::datatable(class='compact stripe hover row-border order-column',rownames=FALSE,options= list(paging = TRUE, searching = TRUE,info=FALSE))
 
@@ -120,6 +121,7 @@ output$resultMap <- renderLeaflet({
                           countries2$value)
   
   leaflet(data = countries2) %>% #leaflet supports matrices,data.frames and spatial objects from sp package
+    setView(0,0,zoom=1) %>% 
     addTiles() %>%
     addPolygons(fillColor = ~pal(value), 
                 fillOpacity = 0.8, 
@@ -127,5 +129,10 @@ output$resultMap <- renderLeaflet({
                 weight = 1,
                 popup = country_popup
     ) %>% 
-    mapOptions(zoomToLimits="first")
+    addLegend(pal = pal, 
+              values = ~countries2$value, 
+              position = "bottomright", 
+              title = " ") #%>% 
+           
+    #mapOptions(zoomToLimits="first")
 })

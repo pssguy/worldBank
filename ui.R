@@ -9,18 +9,19 @@ dashboardPage(skin="yellow", title = "World Bank",
 
     
     sidebarMenu(
-      menuItem("Searchable", tabName = "searchable"),
+      menuItem("Searchable", tabName = "searchable", icon = icon("search")),
       
       inputPanel(
-       # includeMarkdown("search.md"),
+      
       textInput("searchValue", 
                 label="Enter a term of interest. The resulting table can be further searched    
                 Click on row of required indicator and after a few seconds a table of all the data,
                 a chart showing up to ten least-developed nations from latest data, and map of countries covered by indicator
                 will appear",
-                placeholder="Enter term e.g. Poverty"),
-      actionButton("searchWB","Go")
+                placeholder="Enter term e.g. Poverty")
+     
       ),
+      actionButton("searchWB","Go"),
       menuItem("Info", tabName = "info",icon = icon("info")),
       
       
