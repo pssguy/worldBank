@@ -56,7 +56,11 @@ dashboardPage(skin="yellow", title = "World Bank",
         DT::dataTableOutput("resultTable")
       )),
       column(width=5,
-      box(width=12,title="Bottom Countries - Add/Remove countries by clicking legend",
+      box(width=12,title="Extreme Countries - Add/Remove countries by clicking legend",
+          inputPanel(
+          radioButtons("extreme",label = "Extreme Countries",choices=c("Bottom","Top"),inline= TRUE),
+          radioButtons("incZero",label = "Include Zero values",choices=c("No","Yes"),inline= TRUE)
+          ),
           plotlyOutput("resultPlot")
       )),
       column(width=5,

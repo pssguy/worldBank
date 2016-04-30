@@ -76,6 +76,8 @@ output$resultTitle <- renderText({
 output$resultPlot <- renderPlotly({
   
   req(wbData()$test)
+  if(input$incZero=="Yes") {
+  if(input$extreme=="Bottom") {
   worst <- wbData()$test %>% 
     filter(date==wbData()$latest) %>% 
     arrange(value) %>% 
@@ -83,6 +85,37 @@ output$resultPlot <- renderPlotly({
     head(10) %>% 
     select(country) %>% 
     unlist(use.names = FALSE)
+  } else {
+    worst <- wbData()$test %>% 
+      filter(date==wbData()$latest) %>% 
+      arrange(desc(value)) %>% 
+      select(country,value) %>% 
+      head(10) %>% 
+      select(country) %>% 
+      unlist(use.names = FALSE)
+  }
+  }
+ 
+  if(input$incZero!="Yes") {
+    if(input$extreme=="Bottom") {
+    worst <- wbData()$test %>% 
+      filter(date==wbData()$latest&value>0) %>% 
+      arrange(value) %>% 
+      select(country,value) %>% 
+      head(10) %>% 
+      select(country) %>% 
+      unlist(use.names = FALSE)
+  } else {
+    worst <- wbData()$test %>% 
+      filter(date==wbData()$latest&value>0) %>% 
+      arrange(desc(value)) %>% 
+      select(country,value) %>% 
+      head(10) %>% 
+      select(country) %>% 
+      unlist(use.names = FALSE)
+  }
+  }
+
   
   wbData()$test %>% 
     filter(country %in% worst) %>% 
