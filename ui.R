@@ -24,6 +24,8 @@ dashboardPage(skin="yellow", title = "World Bank",
       actionButton("searchWB","Go"),
       menuItem("Info", tabName = "info",icon = icon("info")),
       
+      menuItem("Code",icon = icon("code-fork"),
+               href = "https://github.com/pssguy/worldBank"),
       
       tags$hr(),
       menuItem(text="",href="https://mytinyshinys.shinyapps.io/dashboard",badgeLabel = "All Dashboards and Trelliscopes (14)"),
